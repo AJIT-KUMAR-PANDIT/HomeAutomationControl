@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiHomeassistant } from "react-icons/si";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { SearchModal } from "./SearchModal";
 import { useWifiLatency } from "@/hooks/useWifiLatency";
 // Missing import:  import { useMobile } from '...'; // You need to add the correct import path
@@ -13,7 +14,7 @@ import { Smartphone, Layout } from 'lucide-react'; // or the correct icon librar
 export default function Navigation() {
   const [location] = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
-  const isMobile = useMobile(); // Assuming this hook is available
+  const isMobile = useIsMobile();
   useWifiLatency();
 
   const navItems = [
