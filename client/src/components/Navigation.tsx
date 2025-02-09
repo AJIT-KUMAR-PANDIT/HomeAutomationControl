@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, LightbulbIcon, Wand2, Menu, Search } from "lucide-react";
+import { Home, LightbulbIcon, Wand2, Menu, Search, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiHomeassistant } from "react-icons/si";
@@ -25,29 +25,12 @@ export default function Navigation() {
             <SiHomeassistant className="w-8 h-8 text-primary" />
             <span className="font-semibold text-lg">SmartHome</span>
           </div>
-
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <nav className="flex flex-col gap-2 mt-8">
-                {links.map(({ href, label, icon: Icon }) => (
-                  <Link key={href} href={href}>
-                    <Button
-                      variant={location === href ? "default" : "ghost"}
-                      className="w-full justify-start"
-                    >
-                      <Icon className="mr-2 h-5 w-5" />
-                      {label}
-                    </Button>
-                  </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Wifi className="h-4 w-4" />
+              <span className="text-sm" id="latency">-- ms</span>
+            </div>
+          </div>
         </div>
       </header>
 

@@ -30,7 +30,7 @@ export function registerRoutes(app: Express): Server {
     try {
       const device = await storage.updateDevice(parseInt(req.params.id), state, value);
       res.json(device);
-      
+
       // Mock MQTT publish
       console.log(`[MQTT] Publishing state change: ${device.name} -> ${state}`);
     } catch (error) {
@@ -61,6 +61,8 @@ export function registerRoutes(app: Express): Server {
       res.status(404).json({ message: "Scene not found" });
     }
   });
+
+  app.get('/api/ping', (_, res) => res.send('pong')); // Added ping endpoint
 
   const httpServer = createServer(app);
   return httpServer;
