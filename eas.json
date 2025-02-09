@@ -1,0 +1,25 @@
+{
+    "cli": {
+        "version": ">=15.0.9",
+        "appVersionSource": "remote"
+    },
+    "build": {
+        "development": {
+            "android": {
+                "gradleCommand": "assembleDebug"
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "android": {
+                "buildType": "apk"
+            }
+        },
+        "production": {
+            "distribution": "store",
+            "android": {
+                "gradleCommand": "bundleRelease"
+            }
+        }
+    }
+}

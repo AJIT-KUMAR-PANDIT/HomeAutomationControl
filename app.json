@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "OpenIoTHome",
+    "slug": "rest-express",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/luna.png",
+    "splash": {
+      "image": "./assets/luna.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "package": "com.openai.home",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/luna.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2373e9b9-a6f9-44b3-ab0b-c8dff195b238"
+      }
+    },
+    "entryPoint": "src/App.tsx",
+    "ios": {
+      "bundleIdentifier": "com.openai.home",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}
