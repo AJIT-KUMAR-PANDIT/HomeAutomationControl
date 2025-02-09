@@ -19,13 +19,7 @@ export default function Settings() {
   const { data: devices = [], isLoading } = useQuery<Device[]>({ 
     queryKey: ["/api/devices"]
   });
-  const [localDevices, setLocalDevices] = useState<Device[]>([]);
-
-  useEffect(() => {
-    if (devices) {
-      setLocalDevices(devices);
-    }
-  }, [devices]);
+  const [editingDevice, setEditingDevice] = useState<Device | null>(null);
   const [newDevice, setNewDevice] = useState({ name: '', type: '', room: '' });
 
   const queryClient = useQueryClient();
@@ -33,10 +27,7 @@ export default function Settings() {
   const handleAddDevice = async () => {
     if (newDevice.name && newDevice.type && newDevice.room) {
       try {
-        await apiRequest("/api/devices", {
-          method: "POST",
-          data: newDevice
-        });
+        await apiRequest("POST", "/api/devices", newDevice);
         queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
         setNewDevice({ name: '', type: '', room: '' });
       } catch (error) {
@@ -45,11 +36,21 @@ export default function Settings() {
     }
   };
 
+  const handleUpdateDevice = async () => {
+    if (editingDevice) {
+      try {
+        await apiRequest("PUT", `/api/devices/${editingDevice.id}`, editingDevice);
+        queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
+        setEditingDevice(null);
+      } catch (error) {
+        console.error("Failed to update device:", error);
+      }
+    }
+  };
+
   const handleDeleteDevice = async (id: number) => {
     try {
-      await apiRequest(`/api/devices/${id}`, {
-        method: "DELETE"
-      });
+      await apiRequest("DELETE", `/api/devices/${id}`);
       queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
     } catch (error) {
       console.error("Failed to delete device:", error);
@@ -122,17 +123,52 @@ export default function Settings() {
             <div className="space-y-2">
               {devices.map(device => (
                 <div key={device.id} className="flex items-center justify-between p-2 border rounded">
-                  <div>
-                    <h3 className="font-medium">{device.name}</h3>
-                    <p className="text-sm text-white/70">{device.room}</p>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => handleDeleteDevice(device.id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
+                  {editingDevice?.id === device.id ? (
+                    <div className="flex-1 mr-2 space-y-2">
+                      <Input
+                        value={editingDevice.name}
+                        onChange={(e) => setEditingDevice({...editingDevice, name: e.target.value})}
+                        placeholder="Device Name"
+                      />
+                      <Input
+                        value={editingDevice.type}
+                        onChange={(e) => setEditingDevice({...editingDevice, type: e.target.value})}
+                        placeholder="Device Type"
+                      />
+                      <Input
+                        value={editingDevice.room}
+                        onChange={(e) => setEditingDevice({...editingDevice, room: e.target.value})}
+                        placeholder="Room"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={handleUpdateDevice}>Save</Button>
+                        <Button variant="ghost" onClick={() => setEditingDevice(null)}>Cancel</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <h3 className="font-medium">{device.name}</h3>
+                        <p className="text-sm text-white/70">{device.room}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => setEditingDevice(device)}
+                        >
+                          <PencilIcon className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => handleDeleteDevice(device.id)}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
