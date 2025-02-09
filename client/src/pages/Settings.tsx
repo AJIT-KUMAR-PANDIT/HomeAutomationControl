@@ -27,7 +27,10 @@ export default function Settings() {
   const handleAddDevice = async () => {
     if (newDevice.name && newDevice.type && newDevice.room) {
       try {
-        await apiRequest("POST", "/api/devices", newDevice);
+        const response = await apiRequest("/api/devices", {
+          method: "POST",
+          data: { ...newDevice, state: false }
+        });
         queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
         setNewDevice({ name: '', type: '', room: '' });
       } catch (error) {
@@ -39,7 +42,10 @@ export default function Settings() {
   const handleUpdateDevice = async () => {
     if (editingDevice) {
       try {
-        await apiRequest("PUT", `/api/devices/${editingDevice.id}`, editingDevice);
+        await apiRequest(`/api/devices/${editingDevice.id}`, {
+          method: "PUT",
+          data: editingDevice
+        });
         queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
         setEditingDevice(null);
       } catch (error) {
@@ -50,7 +56,9 @@ export default function Settings() {
 
   const handleDeleteDevice = async (id: number) => {
     try {
-      await apiRequest("DELETE", `/api/devices/${id}`);
+      await apiRequest(`/api/devices/${id}`, {
+        method: "DELETE"
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
     } catch (error) {
       console.error("Failed to delete device:", error);
