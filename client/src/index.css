@@ -5,10 +5,6 @@
 @layer base {
   * {
     @apply border-border;
-
-@layer base {
-  * {
-    @apply border-border;
   }
 
   body {
@@ -33,20 +29,5 @@
 
   .glass {
     @apply backdrop-blur-lg bg-background/40 border-primary/20;
-  }
-    @apply font-sans antialiased bg-gradient-to-br from-background to-background/90 min-h-screen;
-  }
-
-  :root {
-    --background: 240 10% 3.9%;
-    --primary: 240 80% 60%;
-    --primary-foreground: 0 0% 98%;
-  }
-}
-
-  }
-
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
   }
 }
