@@ -18,11 +18,11 @@ export default function History() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <header>
         <h1 className="text-3xl font-bold">Device History</h1>
         <p className="text-muted-foreground mt-2">
-          Track your device activity
+          Track your device activity over time
         </p>
       </header>
 
@@ -47,10 +47,10 @@ export default function History() {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium">{entry.deviceName}</h3>
-                    <p className="text-sm text-muted-foreground">{entry.action}</p>
+                    <h3 className="font-medium text-white">{entry.deviceName}</h3>
+                    <p className="text-sm text-white/70">{entry.action}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-white/70">
                     {formatDistanceToNow(new Date(entry.timestamp), { addSuffix: true })}
                   </p>
                 </div>

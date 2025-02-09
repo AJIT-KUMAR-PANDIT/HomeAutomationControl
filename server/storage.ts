@@ -30,7 +30,22 @@ export class MemStorage implements IStorage {
 
   constructor() {
     this.devices = new Map();
-    this.deviceHistory = [];
+    this.deviceHistory = [
+      {
+        id: 1,
+        deviceId: 1,
+        deviceName: "Living Room Light",
+        action: "Turned Off",
+        timestamp: new Date(Date.now() - 3600000)
+      },
+      {
+        id: 2,
+        deviceId: 2,
+        deviceName: "Kitchen Light",
+        action: "Turned On",
+        timestamp: new Date(Date.now() - 7200000)
+      }
+    ];
     this.deviceId = 1;
     
     // Add some sample devices
