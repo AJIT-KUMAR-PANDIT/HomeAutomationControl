@@ -13,21 +13,44 @@ import {
 
 export default function Settings() {
   const [command, setCommand] = useState('');
-  const [devices, setDevices] = useState([
-    { id: 1, name: 'Smart Light', type: 'light', room: 'Living Room' },
-    { id: 2, name: 'Smart TV', type: 'tv', room: 'Living Room' },
-  ]);
+  const { data: devices = [], isLoading } = useQuery<Device[]>({ 
+    queryKey: ["/api/devices"]
+  });
+  const [localDevices, setLocalDevices] = useState<Device[]>([]);
+
+  useEffect(() => {
+    if (devices) {
+      setLocalDevices(devices);
+    }
+  }, [devices]);
   const [newDevice, setNewDevice] = useState({ name: '', type: '', room: '' });
 
-  const handleAddDevice = () => {
+  const queryClient = useQueryClient();
+  
+  const handleAddDevice = async () => {
     if (newDevice.name && newDevice.type && newDevice.room) {
-      setDevices([...devices, { ...newDevice, id: Date.now() }]);
-      setNewDevice({ name: '', type: '', room: '' });
+      try {
+        await apiRequest("/api/devices", {
+          method: "POST",
+          data: newDevice
+        });
+        queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
+        setNewDevice({ name: '', type: '', room: '' });
+      } catch (error) {
+        console.error("Failed to add device:", error);
+      }
     }
   };
 
-  const handleDeleteDevice = (id: number) => {
-    setDevices(devices.filter(device => device.id !== id));
+  const handleDeleteDevice = async (id: number) => {
+    try {
+      await apiRequest(`/api/devices/${id}`, {
+        method: "DELETE"
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
+    } catch (error) {
+      console.error("Failed to delete device:", error);
+    }
   };
 
   const sendCommand = async () => {
