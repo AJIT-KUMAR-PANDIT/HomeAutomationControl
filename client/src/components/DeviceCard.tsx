@@ -32,7 +32,7 @@ export default function DeviceCard({ device }: DeviceCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="backdrop-blur-lg bg-gradient-to-br from-black/40 to-primary/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1">
+      <Card className="glass hover:glow transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-background/60 via-background/40 to-primary/5">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">

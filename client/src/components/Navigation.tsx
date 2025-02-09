@@ -16,7 +16,7 @@ export default function Navigation() {
   return (
     <>
       {/* Top Navigation */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b z-50">
+      <header className="fixed top-0 left-0 right-0 h-16 glass border-b z-50 bg-gradient-to-r from-background/60 via-primary/5 to-background/60">
         <div className="container h-full mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <SiHomeassistant className="w-8 h-8 text-primary" />
@@ -49,7 +49,7 @@ export default function Navigation() {
       </header>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-t md:hidden z-50">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 glass border-t md:hidden z-50 bg-gradient-to-r from-background/60 via-primary/5 to-background/60">
         <div className="container h-full mx-auto grid grid-cols-3">
           {links.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href}>
