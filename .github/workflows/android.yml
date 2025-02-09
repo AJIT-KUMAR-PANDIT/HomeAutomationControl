@@ -1,4 +1,4 @@
-name: Build Android APK with Capacitor
+name: Build Android APK & AAB with Capacitor
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20  # ✅ Ensure Node.js 20 is used
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
@@ -27,7 +27,7 @@ jobs:
       - name: Install Capacitor Android
         run: |
           npm install @capacitor/android
-          npx cap add android  # ✅ Add Android platform before syncing
+          npx cap add android || true  # Prevents failure if already added
           npx cap sync android
 
       - name: Set up JDK & Android SDK
@@ -39,13 +39,16 @@ jobs:
       - name: Grant permissions to Gradle
         run: chmod +x android/gradlew
 
-      - name: Build APK
+      - name: Build APK & AAB
         run: |
           cd android
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace --debug  # Build APK
+          ./gradlew bundleRelease --stacktrace --debug  # Build AAB
 
-      - name: Upload APK as Artifact
+      - name: Upload APK & AAB as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: android-artifacts
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/bundle/release/app-release.aab
