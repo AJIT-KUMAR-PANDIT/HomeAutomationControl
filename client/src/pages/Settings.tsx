@@ -6,7 +6,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash, ChevronDown } from "lucide-react";
+import { Plus, Trash, ChevronDown, Pencil } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -157,7 +157,7 @@ export default function Settings() {
                           size="icon"
                           onClick={() => setEditingDevice(device)}
                         >
-                          <PencilIcon className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                         </Button>
                         <Button 
                           variant="ghost" 
