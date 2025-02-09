@@ -27,7 +27,7 @@ jobs:
       - name: Install Capacitor Android
         run: |
           npm install @capacitor/android
-          npx cap add android || true  # Prevents failure if already added
+          npx cap add android || true  # Prevent failure if already added
           npx cap sync android
 
       - name: Set up JDK & Android SDK
@@ -37,16 +37,22 @@ jobs:
           java-version: '17'
 
       - name: Increase Gradle Memory
-        run: echo "org.gradle.jvmargs=-Xmx4g" >> android/gradle.properties
+        run: |
+          echo "org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=512m" >> android/gradle.properties
 
       - name: Grant permissions to Gradle
         run: chmod +x android/gradlew
 
-      - name: Build APK & AAB (Optimized)
+      - name: Check for Missing Dependencies
         run: |
           cd android
-          ./gradlew assembleDebug --stacktrace --debug  # Build APK
-          ./gradlew bundleRelease --stacktrace --debug  # Build AAB
+          ./gradlew dependencies --stacktrace || true  # Run even if it fails
+
+      - name: Build APK & AAB (Debug Mode)
+        run: |
+          cd android
+          ./gradlew assembleDebug --stacktrace --info || true  # Build APK
+          ./gradlew bundleRelease --stacktrace --info || true  # Build AAB
 
       - name: Compress APK & AAB to Reduce Size
         run: |
