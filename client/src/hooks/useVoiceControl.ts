@@ -15,13 +15,15 @@ export function useVoiceControl({ onCommand, commands }: VoiceControlOptions) {
     const lowerText = text.toLowerCase();
     for (const command of commands) {
       if (lowerText.includes(command.toLowerCase())) {
-        onCommand(command);
+        onCommand(text);
         return;
       }
     }
   }, [commands, onCommand]);
 
   useEffect(() => {
+    let recognition: any = null;
+
     if (!('webkitSpeechRecognition' in window)) {
       toast({
         title: "Not Supported",
@@ -31,57 +33,69 @@ export function useVoiceControl({ onCommand, commands }: VoiceControlOptions) {
       return;
     }
 
-    // @ts-ignore - WebkitSpeechRecognition is not in TypeScript's lib
-    const recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    const initializeRecognition = () => {
+      // @ts-ignore - WebkitSpeechRecognition is not in TypeScript's lib
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
 
-    recognition.onstart = () => {
-      toast({
-        title: "Listening",
-        description: "Speak your command...",
-        duration: 2000,
-      });
+      recognition.onstart = () => {
+        toast({
+          title: "Listening",
+          description: "Speak your command...",
+          duration: 2000,
+        });
+      };
+
+      recognition.onresult = (event: any) => {
+        const last = event.results.length - 1;
+        const text = event.results[last][0].transcript;
+        setTranscript(text);
+
+        if (event.results[last].isFinal) {
+          processCommand(text);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        if (event.error === 'aborted') {
+          // This is an expected error when we stop listening
+          return;
+        }
+
+        console.error('Speech recognition error', event.error);
+        toast({
+          title: "Error",
+          description: "Failed to recognize speech",
+          duration: 2000,
+        });
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        recognition = null;
+      };
     };
 
-    recognition.onresult = (event: any) => {
-      const last = event.results.length - 1;
-      const text = event.results[last][0].transcript;
-      setTranscript(text);
-
-      if (event.results[last].isFinal) {
-        processCommand(text);
-      }
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
-      toast({
-        title: "Error",
-        description: "Failed to recognize speech",
-        duration: 2000,
-      });
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    if (isListening) {
+    if (isListening && !recognition) {
+      initializeRecognition();
       try {
         recognition.start();
       } catch (error) {
         console.error('Failed to start recognition:', error);
+        setIsListening(false);
       }
     }
 
     return () => {
-      try {
-        recognition.stop();
-      } catch (error) {
-        console.error('Failed to stop recognition:', error);
+      if (recognition) {
+        try {
+          recognition.stop();
+        } catch (error) {
+          console.error('Failed to stop recognition:', error);
+        }
       }
     };
   }, [isListening, processCommand, toast]);
