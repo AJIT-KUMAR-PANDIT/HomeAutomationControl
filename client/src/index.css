@@ -8,14 +8,15 @@
   }
 
   body {
-    @apply font-sans antialiased bg-gradient-to-br from-background via-primary/10 to-primary/20;
+    @apply font-sans antialiased bg-gradient-to-br from-background via-primary/10 to-primary/20 text-white;
     background-attachment: fixed;
   }
 
   :root {
     --background: 240 30% 4%;
     --primary: 260 100% 65%;
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 0% 100%;
+    --foreground: 0 0% 100%;
     --border: 260 30% 25%;
   }
 
