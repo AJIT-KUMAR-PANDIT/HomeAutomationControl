@@ -1,11 +1,20 @@
 import { type Device, type InsertDevice, type Scene, type InsertScene } from "@shared/schema";
 
+interface DeviceHistory {
+  id: number;
+  deviceId: number;
+  deviceName: string;
+  action: string;
+  timestamp: Date;
+}
+
 export interface IStorage {
   // Device operations
   getDevices(): Promise<Device[]>;
   getDevice(id: number): Promise<Device | undefined>;
   createDevice(device: InsertDevice): Promise<Device>;
   updateDevice(id: number, state: boolean, value?: number): Promise<Device>;
+  getDeviceHistory(): Promise<DeviceHistory[]>;
   
   // Scene operations
   getScenes(): Promise<Scene[]>;
@@ -16,15 +25,13 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private devices: Map<number, Device>;
-  private scenes: Map<number, Scene>;
+  private deviceHistory: DeviceHistory[];
   private deviceId: number;
-  private sceneId: number;
 
   constructor() {
     this.devices = new Map();
-    this.scenes = new Map();
+    this.deviceHistory = [];
     this.deviceId = 1;
-    this.sceneId = 1;
     
     // Add some sample devices
     this.createDevice({ name: "Living Room Light", type: "light", room: "Living Room", state: false });
@@ -53,6 +60,15 @@ export class MemStorage implements IStorage {
     
     const updatedDevice = { ...device, state, value: value ?? device.value };
     this.devices.set(id, updatedDevice);
+    
+    this.deviceHistory.push({
+      id: this.deviceHistory.length + 1,
+      deviceId: id,
+      deviceName: device.name,
+      action: state ? "Turned On" : "Turned Off",
+      timestamp: new Date()
+    });
+    
     return updatedDevice;
   }
 
@@ -69,6 +85,10 @@ export class MemStorage implements IStorage {
     const scene: Scene = { ...insertScene, id };
     this.scenes.set(id, scene);
     return scene;
+  }
+
+  async getDeviceHistory(): Promise<DeviceHistory[]> {
+    return this.deviceHistory.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   async activateScene(id: number): Promise<Device[]> {

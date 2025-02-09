@@ -38,10 +38,10 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Scene routes
-  app.get("/api/scenes", async (_req, res) => {
-    const scenes = await storage.getScenes();
-    res.json(scenes);
+  // History routes
+  app.get("/api/history", async (_req, res) => {
+    const history = await storage.getDeviceHistory();
+    res.json(history);
   });
 
   app.post("/api/scenes", async (req, res) => {

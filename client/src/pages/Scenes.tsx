@@ -1,41 +1,61 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type Scene } from "@shared/schema";
-import SceneCard from "@/components/SceneCard";
+import { formatDistanceToNow } from "date-fns";
 
-export default function Scenes() {
-  const { data: scenes, isLoading } = useQuery<Scene[]>({ 
-    queryKey: ["/api/scenes"]
+interface DeviceHistory {
+  id: number;
+  deviceId: number;
+  deviceName: string;
+  action: string;
+  timestamp: Date;
+}
+
+export default function History() {
+  const { data: history, isLoading } = useQuery<DeviceHistory[]>({ 
+    queryKey: ["/api/history"]
   });
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-bold">Scenes</h1>
+        <h1 className="text-3xl font-bold">Device History</h1>
         <p className="text-muted-foreground mt-2">
-          Activate predefined device configurations
+          Track your device activity
         </p>
       </header>
 
       {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {Array(3).fill(0).map((_, i) => (
+        <div className="space-y-4">
+          {Array(5).fill(0).map((_, i) => (
             <Card key={i}>
               <CardContent className="pt-6">
-                <Skeleton className="h-20" />
+                <Skeleton className="h-16" />
               </CardContent>
             </Card>
           ))}
         </div>
-      ) : scenes?.length === 0 ? (
+      ) : history?.length === 0 ? (
         <p className="text-center text-muted-foreground py-8">
-          No scenes configured
+          No device activity recorded
         </p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {scenes?.map(scene => (
-            <SceneCard key={scene.id} scene={scene} />
+        <div className="space-y-4">
+          {history?.map(entry => (
+            <Card key={entry.id} className="glass hover:glow transition-all duration-300">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">{entry.deviceName}</h3>
+                    <p className="text-sm text-muted-foreground">{entry.action}</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {formatDistanceToNow(new Date(entry.timestamp), { addSuffix: true })}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
