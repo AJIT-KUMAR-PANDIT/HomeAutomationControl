@@ -1,5 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { Home, LightbulbIcon, Wand2, Menu, Search, Wifi, Settings } from "lucide-react";
+import {
+  Home,
+  LightbulbIcon,
+  Wand2,
+  Menu,
+  Search,
+  Wifi,
+  Settings,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiHomeassistant } from "react-icons/si";
@@ -26,12 +34,14 @@ export default function Navigation() {
         <div className="container h-full mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <SiHomeassistant className="w-8 h-8 text-primary" />
-            <span className="font-semibold text-lg">SmartHome</span>
+            <span className="font-semibold text-lg">OpenIOT Home Labs</span>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Wifi className="h-4 w-4" />
-              <span className="text-sm" id="latency">-- ms</span>
+              <span className="text-sm" id="latency">
+                -- ms
+              </span>
             </div>
           </div>
         </div>
@@ -53,7 +63,13 @@ export default function Navigation() {
               </Button>
             </Link>
           ))}
-          <Link href="#" onClick={(e) => { e.preventDefault(); setSearchOpen(true); }}>
+          <Link
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setSearchOpen(true);
+            }}
+          >
             <Button
               variant="ghost"
               className="w-full h-full rounded-none flex flex-col items-center justify-center gap-1"
