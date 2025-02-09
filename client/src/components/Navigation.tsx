@@ -1,19 +1,22 @@
 import { Link, useLocation } from "wouter";
-import { Home, LightbulbIcon, Wand2, Menu, Search, Wifi } from "lucide-react";
+import { Home, LightbulbIcon, Wand2, Menu, Search, Wifi, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiHomeassistant } from "react-icons/si";
 import { useState } from "react";
 import { SearchModal } from "./SearchModal";
+import { useWifiLatency } from "@/hooks/useWifiLatency";
 
 export default function Navigation() {
   const [location] = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
+  useWifiLatency();
 
   const links = [
     { href: "/", label: "Home", icon: Home },
     { href: "/devices", label: "Devices", icon: LightbulbIcon },
     { href: "/scenes", label: "History", icon: Wand2 },
+    { href: "/settings", label: "Settings", icon: Settings },
   ];
 
   return (

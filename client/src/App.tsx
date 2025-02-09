@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Home from "@/pages/Home";
 import Devices from "@/pages/Devices";
 import Scenes from "@/pages/Scenes";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/devices" component={Devices} />
           <Route path="/scenes" component={Scenes} />
+          <Route path="/settings" component={Settings} />
           <Route component={NotFound} />
         </Switch>
       </main>
