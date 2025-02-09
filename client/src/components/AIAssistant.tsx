@@ -5,11 +5,13 @@ import { useVoiceControl } from '@/hooks/useVoiceControl';
 import { useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const commands = [
     'turn on lights',
@@ -17,19 +19,85 @@ export default function AIAssistant() {
     'set temperature',
     'show devices',
     'show scenes',
+    'go to home'
   ];
 
   const handleCommand = async (command: string) => {
+    const commandLower = command.toLowerCase();
+
+    // Provide feedback that we heard the command
     toast({
       title: 'Voice Command Received',
       description: command,
       duration: 2000,
     });
 
-    // Example command handling
-    if (command.includes('turn on lights')) {
-      await apiRequest('PATCH', '/api/devices/1', { state: true });
-      queryClient.invalidateQueries({ queryKey: ['/api/devices'] });
+    try {
+      // Navigation commands
+      if (commandLower.includes('show devices')) {
+        setLocation('/devices');
+        return;
+      }
+      if (commandLower.includes('show scenes')) {
+        setLocation('/scenes');
+        return;
+      }
+      if (commandLower.includes('go to home')) {
+        setLocation('/');
+        return;
+      }
+
+      // Device control commands
+      if (commandLower.includes('turn on lights')) {
+        const result = await apiRequest('PATCH', '/api/devices/1', { state: true });
+        if (result.ok) {
+          toast({
+            title: 'Success',
+            description: 'Lights turned on',
+            duration: 2000,
+          });
+          queryClient.invalidateQueries({ queryKey: ['/api/devices'] });
+        }
+      }
+
+      if (commandLower.includes('turn off lights')) {
+        const result = await apiRequest('PATCH', '/api/devices/1', { state: false });
+        if (result.ok) {
+          toast({
+            title: 'Success',
+            description: 'Lights turned off',
+            duration: 2000,
+          });
+          queryClient.invalidateQueries({ queryKey: ['/api/devices'] });
+        }
+      }
+
+      // Temperature control
+      if (commandLower.includes('set temperature')) {
+        // Extract number from command if present
+        const match = command.match(/\d+/);
+        if (match) {
+          const temperature = parseInt(match[0]);
+          const result = await apiRequest('PATCH', '/api/devices/3', { 
+            state: true,
+            value: temperature 
+          });
+          if (result.ok) {
+            toast({
+              title: 'Success',
+              description: `Temperature set to ${temperature}°F`,
+              duration: 2000,
+            });
+            queryClient.invalidateQueries({ queryKey: ['/api/devices'] });
+          }
+        }
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to execute command',
+        duration: 2000,
+      });
     }
   };
 
@@ -75,7 +143,7 @@ export default function AIAssistant() {
                   {isListening ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
                 </button>
               </div>
-              
+
               <div className="text-sm text-muted-foreground">
                 <p>Available commands:</p>
                 <ul className="list-disc list-inside mt-2">

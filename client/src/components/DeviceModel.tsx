@@ -1,7 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, useFrame } from "react";
+import { useState } from "react";
 import { type Device } from "@shared/schema";
+import { type ThreeEvent } from "@react-three/fiber";
 
 interface DeviceModelProps {
   device: Device;
@@ -10,14 +11,11 @@ interface DeviceModelProps {
 function Light({ isOn }: { isOn: boolean }) {
   const [hovered, setHovered] = useState(false);
 
-  useFrame((state) => {
-    state.camera.position.y = Math.sin(state.clock.elapsedTime / 2) * 0.2;
-  });
-
   return (
     <mesh
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
+      rotation={[0, hovered ? Math.PI / 4 : 0, 0]}
     >
       <sphereGeometry args={[1, 32, 32]} />
       <meshStandardMaterial
@@ -34,14 +32,11 @@ function Light({ isOn }: { isOn: boolean }) {
 function Thermostat({ isOn }: { isOn: boolean }) {
   const [hovered, setHovered] = useState(false);
 
-  useFrame((state) => {
-    state.camera.position.y = Math.sin(state.clock.elapsedTime / 2) * 0.2;
-  });
-
   return (
     <mesh
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
+      rotation={[0, hovered ? Math.PI / 4 : 0, 0]}
     >
       <cylinderGeometry args={[0.8, 0.8, 0.3, 32]} />
       <meshStandardMaterial
