@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Updated version
+        uses: actions/checkout@v4
 
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20  # ✅ Use Node.js 20
+          node-version: 20  # ✅ Ensure Node.js 20 is used
 
       - name: Install dependencies
         run: npm install
@@ -27,6 +27,7 @@ jobs:
       - name: Install Capacitor Android
         run: |
           npm install @capacitor/android
+          npx cap add android  # ✅ Add Android platform before syncing
           npx cap sync android
 
       - name: Set up JDK & Android SDK
