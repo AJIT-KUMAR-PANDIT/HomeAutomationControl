@@ -36,19 +36,25 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Increase Gradle Memory
+        run: echo "org.gradle.jvmargs=-Xmx4g" >> android/gradle.properties
+
       - name: Grant permissions to Gradle
         run: chmod +x android/gradlew
 
-      - name: Build APK & AAB
+      - name: Build APK & AAB (Optimized)
         run: |
           cd android
           ./gradlew assembleDebug --stacktrace --debug  # Build APK
           ./gradlew bundleRelease --stacktrace --debug  # Build AAB
 
+      - name: Compress APK & AAB to Reduce Size
+        run: |
+          cd android/app/build/outputs/
+          zip -r android-artifacts.zip apk/debug/app-debug.apk bundle/release/app-release.aab
+
       - name: Upload APK & AAB as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android-artifacts
-          path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/android-artifacts.zip
