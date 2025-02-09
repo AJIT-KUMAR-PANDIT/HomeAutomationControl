@@ -49,7 +49,7 @@ export default function Navigation() {
       </header>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-t md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-t md:hidden z-50">
         <div className="container h-full mx-auto grid grid-cols-3">
           {links.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href}>
