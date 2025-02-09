@@ -3,7 +3,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@/components/Navigation";
-import AIAssistant from "@/components/AIAssistant";
 import Home from "@/pages/Home";
 import Devices from "@/pages/Devices";
 import Scenes from "@/pages/Scenes";
@@ -21,7 +20,6 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <AIAssistant />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { type Device } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
-import { LightbulbIcon, ThermometerIcon, Mic } from "lucide-react";
+import { LightbulbIcon, ThermometerIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface DeviceCardProps {
@@ -15,7 +15,6 @@ interface DeviceCardProps {
 export default function DeviceCard({ device }: DeviceCardProps) {
   const queryClient = useQueryClient();
   const [isPending, setIsPending] = useState(false);
-  const [isListening, setIsListening] = useState(false);
 
   async function updateDevice(state: boolean, value?: number) {
     setIsPending(true);
@@ -50,20 +49,12 @@ export default function DeviceCard({ device }: DeviceCardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button 
-                className={`p-2 rounded-full transition-colors ${isListening ? 'bg-primary text-white' : 'bg-primary/10 hover:bg-primary/20'}`}
-                onClick={() => setIsListening(!isListening)}
-              >
-                <Mic className="h-4 w-4" />
-              </button>
-              <Switch
-                checked={device.state}
-                disabled={isPending}
-                onCheckedChange={(state) => updateDevice(state, device.value)}
-                className="data-[state=checked]:bg-primary"
-              />
-            </div>
+            <Switch
+              checked={device.state}
+              disabled={isPending}
+              onCheckedChange={(state) => updateDevice(state, device.value)}
+              className="data-[state=checked]:bg-primary"
+            />
           </div>
 
           {device.type === "thermostat" && (
